@@ -1,4 +1,4 @@
-# Pastebin Lite hki
+# Pastebin Lite
 
 A modern, clean, and colorful paste sharing web application built with Next.js.
 
