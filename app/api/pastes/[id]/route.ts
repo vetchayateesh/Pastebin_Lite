@@ -4,20 +4,19 @@ import { getNow } from "@/lib/time";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> } // ← Fixed: Added Promise
 ) {
     const { id } = await params;
     console.log("API params.id:", id);
-
+    
     if (!id) {
         return Response.json(
             { error: "Paste not found" },
             { status: 404 }
         );
     }
-
+    
     const nowMs = getNow(req.headers);
-
     const result = await pool.query(
         `
     UPDATE pastes
@@ -29,16 +28,15 @@ export async function GET(
     `,
         [id, nowMs]
     );
-
+    
     if (result.rowCount === 0) {
         return Response.json(
             { error: "Paste not found" },
             { status: 404 }
         );
     }
-
+    
     const paste = result.rows[0];
-
     return Response.json({
         content: paste.content,
         remaining_views:
